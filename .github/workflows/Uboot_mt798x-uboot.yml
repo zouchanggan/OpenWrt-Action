@@ -1,0 +1,79 @@
+name: U-Boot for MT798x
+
+on:
+  workflow_dispatch:
+#  schedule:
+#    - cron: 0 3 * * *
+
+jobs:
+  Cleaning:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2    
+
+    - name: Set up environment
+      run: |
+        sudo apt update
+        sudo apt install -y gcc-aarch64-linux-gnu build-essential flex bison libssl-dev device-tree-compiler
+
+    - name: Clone U-Boot source
+      run: |
+        git clone https://github.com/oppen321/bl-mt798x
+
+    - name: Build U-Boot for MT798x
+      run: |
+        cd bl-mt798x
+        SOC=mt7981 BOARD=360t7 ./build.sh
+        SOC=mt7981 BOARD=wr30u ./build.sh
+        SOC=mt7981 BOARD=livinet_zr-3020 ./build.sh
+        SOC=mt7981 BOARD=cetron_ct3003 ./build.sh
+        SOC=mt7981 BOARD=jcg_q30 ./build.sh
+        SOC=mt7981 BOARD=konka_komi-a31 ./build.sh
+        SOC=mt7981 BOARD=wr30u ./build.sh
+        SOC=mt7981 BOARD=imou_lc-hx3001 ./build.sh
+        SOC=mt7981 BOARD=clt_r30b1 ./build.sh
+        SOC=mt7981 BOARD=abt_asr3000 ./build.sh
+        SOC=mt7981 BOARD=cmcc_a10 ./build.sh
+        SOC=mt7981 BOARD=cmcc_rax3000m ./build.sh
+        SOC=mt7981 BOARD=cmcc_rax3000m-emmc ./build.sh
+        SOC=mt7981 BOARD=cmcc_xr30 ./build.sh
+        SOC=mt7981 BOARD=cmcc_xr30-emmc ./build.sh
+        SOC=mt7981 BOARD=newland_nl-wr8103 ./build.sh
+        SOC=mt7981 BOARD=newland_nl-wr9103 ./build.sh
+        SOC=mt7981 BOARD=h3c_magic-nx30-pro ./build.sh
+        SOC=mt7981 BOARD=nokia_ea0326gmp ./build.sh
+        SOC=mt7981 BOARD=ruijie_rg-x30e ./build.sh
+        SOC=mt7981 BOARD=ruijie_rg-x30e-pro ./build.sh
+        SOC=mt7981 BOARD=honor_fur-602 ./build.sh
+        SOC=mt7981 BOARD=ax3000t ./build.sh
+        SOC=mt7981 BOARD=ax3000t_an8855 ./build.sh
+        SOC=mt7986 BOARD=redmi_ax6000 MULTI_LAYOUT=1 ./build.sh
+        SOC=mt7986 BOARD=glinet_gl-mt6000 MULTI_LAYOUT=1 ./build.sh
+        SOC=mt7986 BOARD=jdcloud_re-cp-03 MULTI_LAYOUT=1 ./build.sh
+        SOC=mt7986 BOARD=ruijie_rg-x60-pro MULTI_LAYOUT=1 ./build.sh
+        SOC=mt7986 BOARD=ruijie_rg-x60 MULTI_LAYOUT=1 ./build.sh
+        SOC=mt7986 BOARD=zyxel_ex5700 MULTI_LAYOUT=1 ./build.sh
+        SOC=mt7986 BOARD=tplink_tl-xdr608x MULTI_LAYOUT=1 ./build.sh
+
+    - name: Create release
+      uses: ncipollo/release-action@v1.14.0
+      with:
+        name: U-Boot-mt798x
+        allowUpdates: true
+        tag: U-Boot-mt798x
+        commit: master
+        replacesArtifacts: true
+        token: ${{ secrets.GITHUB_TOKEN }}
+        artifacts: |
+          bl-mt798x/output/*
+        body: |
+          **This is OpenWrt uboot
+          ### 根据 hanwckf 的源码编译：| bl-mt798x |编译的mt798x-uboot，并对其进行了汉化
+          ### winscp进入路由器tmp文件夹，上传uboot：mt7981_cetron_ct3003-fip-fixed-parts.bin（这里替换成你设备相对应的 uboot）
+          ### 运行以下命令刷入大分区uboot
+          - cd /tmp
+          - md5sum mt7981_cetron_ct3003-fip-fixed-parts.bin
+          - mtd write mt7981_cetron_ct3003-fip-fixed-parts.bin FIP
+          - mtd verify mt7981_cetron_ct3003-fip-fixed-parts.bin FIP
