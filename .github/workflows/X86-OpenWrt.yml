@@ -140,7 +140,7 @@ jobs:
         token: ${{ secrets.GITHUB_TOKEN }}
         artifacts: ./artifact/*
         body: |
-          **This is OpenWrt Firmware for X86_64
+          **This is OpenWrt Firmware for X86_64**
           ### 📒 固件信息
           - 💻 平台架构: X86_64
           - ⚽ 固件源码: https://github.com/openwrt/openwrt
