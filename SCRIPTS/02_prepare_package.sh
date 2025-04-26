@@ -72,10 +72,10 @@ sed -i 's/procd_set_param stdout 1/procd_set_param stdout 0/g' feeds/packages/ut
 sed -i 's/procd_set_param stderr 1/procd_set_param stderr 0/g' feeds/packages/utils/ttyd/files/ttyd.init
 
 # 修改默认ip
-sed -i "s/192.168.1.1/10.0.0.1/g" package/base-files/files/bin/config_generate
+# sed -i "s/192.168.1.1/10.0.0.1/g" package/base-files/files/bin/config_generate
 
 # 修改名称
-sed -i 's/OpenWrt/ZeroWrt/' package/base-files/files/bin/config_generate
+# sed -i 's/OpenWrt/ZeroWrt/' package/base-files/files/bin/config_generate
 
 # banner
 cp -rf ../openwrt-package/banner  ./package/base-files/files/etc/banner
@@ -287,30 +287,12 @@ cp -rf ../OpenWrt-Patch/opkg/0001-opkg-download-disable-hsts.patch ./package/sys
 cp -rf ../OpenWrt-Patch/opkg/0002-libopkg-opkg_install-copy-conffiles-to-the-system-co.patch ./package/system/opkg/patches/0002-libopkg-opkg_install-copy-conffiles-to-the-system-co.patch
 
 # 加入作者信息
-sed -i "s/DISTRIB_DESCRIPTION='*.*'/DISTRIB_DESCRIPTION='ZeroWrt-$(date +%Y%m%d)'/g"  package/base-files/files/etc/openwrt_release
-sed -i "s/DISTRIB_REVISION='*.*'/DISTRIB_REVISION=' By OPPEN321'/g" package/base-files/files/etc/openwrt_release
-
-# 版本设置
-cat << 'EOF' >> feeds/luci/modules/luci-mod-status/ucode/template/admin_status/index.ut
-<script>
-function addLinks() {
-    var section = document.querySelector(".cbi-section");
-    if (section) {
-        var links = document.createElement('div');
-        links.innerHTML = '<div class="table"><div class="tr"><div class="td left" width="33%"><a href="https://qm.qq.com/q/JbBVnkjzKa" target="_blank">QQ交流群</a></div><div class="td left" width="33%"><a href="https://t.me/kejizero" target="_blank">TG交流群</a></div><div class="td left"><a href="https://openwrt.kejizero.online" target="_blank">固件地址</a></div></div></div>';
-        section.appendChild(links);
-    } else {
-        setTimeout(addLinks, 100); // 继续等待 `.cbi-section` 加载
-    }
-}
-
-document.addEventListener("DOMContentLoaded", addLinks);
-</script>
-EOF
+sed -i "s/DISTRIB_DESCRIPTION='*.*'/DISTRIB_DESCRIPTION='OpenWrt-$(date +%Y%m%d)'/g"  package/base-files/files/etc/openwrt_release
+sed -i "s/DISTRIB_REVISION='*.*'/DISTRIB_REVISION=' By zouchanggan'/g" package/base-files/files/etc/openwrt_release
 
 # istoreos
-sed -i 's/iStoreOS/ZeroWrt/' package/openwrt-package/istoreos-files/files/etc/board.d/10_system
-sed -i 's/192.168.100.1/10.0.0.1/' package/openwrt-package/istoreos-files/Makefile
+sed -i 's/iStoreOS/OpenWrt/' package/openwrt-package/istoreos-files/files/etc/board.d/10_system
+sed -i 's/192.168.100.1/192.168.1.10/' package/openwrt-package/istoreos-files/Makefile
 
 # update feeds
 ./scripts/feeds update -a
