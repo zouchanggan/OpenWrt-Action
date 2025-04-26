@@ -39,6 +39,7 @@ curl_repo="https://github.com/sbwml/feeds_packages_net_curl"
 urngd_repo="https://github.com/sbwml/package_system_urngd"
 samba4_repo="https://github.com/sbwml/feeds_packages_net_samba4"
 liburing_repo="https://github.com/sbwml/feeds_packages_libs_liburing"
+lucky_repo="https://github.com/gdy666/luci-app-lucky"
 
 # 开始克隆仓库，并行执行
 clone_repo $openwrt_repo $openwrt_release openwrt &
@@ -68,6 +69,7 @@ clone_repo $curl_repo main curl
 clone_repo $urngd_repo main urngd
 clone_repo $samba4_repo main samba4
 clone_repo $liburing_repo main liburing
+clone_repo $lucky_repo main lucky
 
 # 等待所有后台任务完成
 wait
@@ -77,6 +79,8 @@ find openwrt/package/* -maxdepth 0 ! -name 'firmware' ! -name 'kernel' ! -name '
 rm -rf ./openwrt_24/package/firmware ./openwrt_snap/package/kernel ./openwrt_snap/package/base-files ./openwrt_snap/package/Makefile
 cp -rf ./openwrt_24/package/* ./openwrt/package/
 cp -rf ./openwrt_24/feeds.conf.default ./openwrt/feeds.conf.default
+rm -rf ./openwrt-package/luci-app-lucky && rm -rf ./lucky/previews
+cp -rf ./lucky ./openwrt/package && rm -rf ./lucky
 
 # 退出脚本
 exit 0
