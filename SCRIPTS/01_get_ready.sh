@@ -80,7 +80,7 @@ rm -rf ./openwrt_24/package/firmware ./openwrt_snap/package/kernel ./openwrt_sna
 cp -rf ./openwrt_24/package/* ./openwrt/package/
 cp -rf ./openwrt_24/feeds.conf.default ./openwrt/feeds.conf.default
 rm -rf ./openwrt-package/luci-app-lucky && rm -rf ./lucky/previews
-cp -rf ./lucky ./openwrt/package && rm -rf ./lucky
+mv ./lucky ./openwrt/package
 
 # 退出脚本
 exit 0
