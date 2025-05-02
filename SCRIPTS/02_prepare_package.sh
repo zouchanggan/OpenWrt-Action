@@ -72,13 +72,13 @@ sed -i 's/procd_set_param stdout 1/procd_set_param stdout 0/g' feeds/packages/ut
 sed -i 's/procd_set_param stderr 1/procd_set_param stderr 0/g' feeds/packages/utils/ttyd/files/ttyd.init
 
 # 修改默认ip
-# sed -i "s/192.168.1.1/10.0.0.1/g" package/base-files/files/bin/config_generate
+sed -i "s/192.168.1.1/10.0.0.1/g" package/base-files/files/bin/config_generate
 
 # 修改名称
-# sed -i 's/OpenWrt/ZeroWrt/' package/base-files/files/bin/config_generate
+sed -i 's/OpenWrt/ZeroWrt/' package/base-files/files/bin/config_generate
 
 # banner
-# cp -rf ../openwrt-package/banner  ./package/base-files/files/etc/banner
+cp -rf ../openwrt-package/banner  ./package/base-files/files/etc/banner
 
 ### FW4 ###
 rm -rf ./package/network/config/firewall4
@@ -139,6 +139,9 @@ cp -rf ../OpenWrt-Patch/btf/* ./target/linux/generic/hack-6.6/
 # arm64 型号名称
 cp -rf ../OpenWrt-Patch/arm/* ./target/linux/generic/hack-6.6/
 
+# OTHERS
+cp -rf ../OpenWrt-Patch/others/* ./target/linux/generic/pending-6.6/
+
 # cgroupfs-mount
 # fix unmount hierarchical mount
 pushd feeds/packages
@@ -149,6 +152,11 @@ mkdir -p feeds/packages/utils/cgroupfs-mount/patches
 cp -rf ../OpenWrt-Patch/pkgs/cgroupfs-mount/900-mount-cgroup-v2-hierarchy-to-sys-fs-cgroup-cgroup2.patch ./feeds/packages/utils/cgroupfs-mount/patches/
 cp -rf ../OpenWrt-Patch/pkgs/cgroupfs-mount/901-fix-cgroupfs-umount.patch ./feeds/packages/utils/cgroupfs-mount/patches/
 cp -rf ../OpenWrt-Patch/pkgs/cgroupfs-mount/902-mount-sys-fs-cgroup-systemd-for-docker-systemd-suppo.patch ./feeds/packages/utils/cgroupfs-mount/patches/
+
+# vim - fix E1187: Failed to source defaults.vim
+pushd feeds/packages
+patch -p1 < ../../../OpenWrt-Patch/vim/0001-vim-fix-renamed-defaults-config-file.patch
+popd
 
 # procps-ng - top
 sed -i 's/enable-skill/enable-skill --disable-modern-top/g' feeds/packages/utils/procps-ng/Makefile
@@ -178,6 +186,7 @@ cp -rf ../openwrt-package ./package
 cp -rf ../helloworld ./package
 rm -rf feeds/packages/utils/coremark
 rm -rf feeds/luci/applications/luci-app-alist
+rm -rf package/kernel/{r8168,r8101,r8125,r8126,r8127}
 rm -rf feeds/packages/net/{alist,zerotier,xray-core,v2ray-core,v2ray-geodata,sing-box,sms-tool}
 
 # 更换 golang 版本
@@ -258,7 +267,17 @@ sed -i 's/0666/0644/g;s/0777/0755/g' feeds/packages/net/samba4/files/samba.confi
 sed -i 's/0666/0644/g;s/0777/0755/g' feeds/packages/net/samba4/files/smb.conf.template
 
 # rootfs files
-cp -rf ../OpenWrt-Patch/files ./files
+cp -rf ../OpenWrt-Patch/files/* ./files/
+chmod +x files/bin/ZeroWrt
+chmod +x files/root/version.txt
+
+# Realtek_Driver
+cp -rf ../Realtek_Driver/package_kernel_r8101 ./package/kernel/r8101
+cp -rf ../Realtek_Driver/package_kernel_r8125 ./package/kernel/r8125
+cp -rf ../Realtek_Driver/package_kernel_r8126 ./package/kernel/r8126
+cp -rf ../Realtek_Driver/package_kernel_r8127 ./package/kernel/r8127
+cp -rf ../Realtek_Driver/package_kernel_r8152 ./package/kernel/r8152
+cp -rf ../Realtek_Driver/package_kernel_r8168 ./package/kernel/r8168
 
 # Docker
 rm -rf feeds/luci/applications/luci-app-dockerman
@@ -287,12 +306,30 @@ cp -rf ../OpenWrt-Patch/opkg/0001-opkg-download-disable-hsts.patch ./package/sys
 cp -rf ../OpenWrt-Patch/opkg/0002-libopkg-opkg_install-copy-conffiles-to-the-system-co.patch ./package/system/opkg/patches/0002-libopkg-opkg_install-copy-conffiles-to-the-system-co.patch
 
 # 加入作者信息
-sed -i "s/DISTRIB_DESCRIPTION='*.*'/DISTRIB_DESCRIPTION='OpenWrt-$(date +%Y%m%d)'/g"  package/base-files/files/etc/openwrt_release
-sed -i "s/DISTRIB_REVISION='*.*'/DISTRIB_REVISION=' By zouchanggan'/g" package/base-files/files/etc/openwrt_release
+sed -i "s/DISTRIB_DESCRIPTION='*.*'/DISTRIB_DESCRIPTION='ZeroWrt-$(date +%Y%m%d)'/g"  package/base-files/files/etc/openwrt_release
+sed -i "s/DISTRIB_REVISION='*.*'/DISTRIB_REVISION=' By OPPEN321'/g" package/base-files/files/etc/openwrt_release
+
+# 版本设置
+cat << 'EOF' >> feeds/luci/modules/luci-mod-status/ucode/template/admin_status/index.ut
+<script>
+function addLinks() {
+    var section = document.querySelector(".cbi-section");
+    if (section) {
+        var links = document.createElement('div');
+        links.innerHTML = '<div class="table"><div class="tr"><div class="td left" width="33%"><a href="https://qm.qq.com/q/JbBVnkjzKa" target="_blank">QQ交流群</a></div><div class="td left" width="33%"><a href="https://t.me/kejizero" target="_blank">TG交流群</a></div><div class="td left"><a href="https://openwrt.kejizero.online" target="_blank">固件地址</a></div></div></div>';
+        section.appendChild(links);
+    } else {
+        setTimeout(addLinks, 100); // 继续等待 `.cbi-section` 加载
+    }
+}
+
+document.addEventListener("DOMContentLoaded", addLinks);
+</script>
+EOF
 
 # istoreos
-sed -i 's/iStoreOS/OpenWrt/' package/openwrt-package/istoreos-files/files/etc/board.d/10_system
-sed -i 's/192.168.100.1/192.168.1.10/' package/openwrt-package/istoreos-files/Makefile
+sed -i 's/iStoreOS/ZeroWrt/' package/openwrt-package/istoreos-files/files/etc/board.d/10_system
+sed -i 's/192.168.100.1/10.0.0.1/' package/openwrt-package/istoreos-files/Makefile
 
 # update feeds
 ./scripts/feeds update -a
