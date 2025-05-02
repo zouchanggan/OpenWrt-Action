@@ -20,6 +20,7 @@ immortalwrt_repo="https://github.com/immortalwrt/immortalwrt.git"
 lean_repo="https://github.com/coolsnowwolf/lede"
 openwrt_patch="https://github.com/oppen321/OpenWrt-Patch"
 openwrt_add_repo="https://github.com/oppen321/openwrt-package"
+realtek_driver_repo="https://github.com/oppen321/Realtek_Driver"
 dockerman_repo="https://github.com/oppen321/luci-app-dockerman"
 golang_repo="https://github.com/sbwml/packages_lang_golang"
 node_repo="https://github.com/sbwml/feeds_packages_lang_node-prebuilt"
@@ -39,7 +40,6 @@ curl_repo="https://github.com/sbwml/feeds_packages_net_curl"
 urngd_repo="https://github.com/sbwml/package_system_urngd"
 samba4_repo="https://github.com/sbwml/feeds_packages_net_samba4"
 liburing_repo="https://github.com/sbwml/feeds_packages_libs_liburing"
-lucky_repo="https://github.com/gdy666/luci-app-lucky"
 
 # 开始克隆仓库，并行执行
 clone_repo $openwrt_repo $openwrt_release openwrt &
@@ -50,6 +50,7 @@ clone_repo $lean_repo master lede
 clone_repo $openwrt_patch kernel-6.6 OpenWrt-Patch
 clone_repo $openwrt_add_repo v24.10 openwrt-package
 clone_repo $openwrt_add_repo helloworld helloworld
+clone_repo $realtek_driver_repo main Realtek_Driver
 clone_repo $dockerman_repo main luci-app-dockerman
 clone_repo $golang_repo 24.x golang
 clone_repo $nginx_repo openwrt-24.10 nginx
@@ -69,7 +70,6 @@ clone_repo $curl_repo main curl
 clone_repo $urngd_repo main urngd
 clone_repo $samba4_repo main samba4
 clone_repo $liburing_repo main liburing
-clone_repo $lucky_repo main lucky
 
 # 等待所有后台任务完成
 wait
@@ -79,8 +79,6 @@ find openwrt/package/* -maxdepth 0 ! -name 'firmware' ! -name 'kernel' ! -name '
 rm -rf ./openwrt_24/package/firmware ./openwrt_snap/package/kernel ./openwrt_snap/package/base-files ./openwrt_snap/package/Makefile
 cp -rf ./openwrt_24/package/* ./openwrt/package/
 cp -rf ./openwrt_24/feeds.conf.default ./openwrt/feeds.conf.default
-rm -rf ./openwrt-package/luci-app-lucky && rm -rf ./lucky/previews
-mv ./lucky ./openwrt/package
 
 # 退出脚本
 exit 0
