@@ -161,8 +161,6 @@ jobs:
         mkdir -p ./artifact/
         mv openwrt/bin/targets/x86/64/*combined-efi.img* ./artifact/
         mv openwrt/bin/targets/x86/64/*combined-efi.vmdk* ./artifact/
-        mv openwrt/bin/targets/x86/64/*combined.img* ./artifact/
-        mv openwrt/bin/targets/x86/64/*rootfs.img* ./artifact/
         cd openwrt/bin/targets/x86/64
         echo "KERNEL=$(cat *.manifest | grep ^kernel | cut -d- -f2 | tr -d ' ')" >> $GITHUB_ENV
         
