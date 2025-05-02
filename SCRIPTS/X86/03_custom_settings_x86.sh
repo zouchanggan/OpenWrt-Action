@@ -34,6 +34,28 @@ sed -i 's#grep '\''=\[ym\]'\'' \$(LINUX_DIR)/\.config\.set | LC_ALL=C sort | \$(
 find ./ -name *.orig | xargs rm -f
 find ./ -name *.rej | xargs rm -f
 
+# adguardhome
+mkdir -p files/usr/bin
+AGH_CORE=$(curl -sL https://api.github.com/repos/AdguardTeam/AdGuardHome/releases/latest | grep /AdGuardHome_linux_amd64 | awk -F '"' '{print $4}')
+wget -qO- $AGH_CORE | tar xOvz > files/usr/bin/AdGuardHome
+chmod +x files/usr/bin/AdGuardHome
+
+# openclash
+mkdir -p files/etc/openclash/core
+CLASH_META_URL="https://raw.githubusercontent.com/vernesong/OpenClash/core/master/meta/clash-linux-amd64.tar.gz"
+GEOIP_URL="https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geoip.dat"
+GEOSITE_URL="https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geosite.dat"
+wget -qO- $CLASH_META_URL | tar xOvz > files/etc/openclash/core/clash_meta
+wget -qO- $GEOIP_URL > files/etc/openclash/GeoIP.dat
+wget -qO- $GEOSITE_URL > files/etc/openclash/GeoSite.dat
+chmod +x files/etc/openclash/core/clash*
+
+# caddy
+mkdir -p files/usr/bin
+CADDY_URL="https://github.com/lmq8267/caddy/releases/download/v2.10.0/caddy-amd64-upx"
+wget -qO- $CADDY_URL > files/usr/bin/caddy
+chmod +x files/usr/bin/caddy
+
 # 默认设置
 git clone --depth=1 -b openwrt-24.10 https://github.com/oppen321/default-settings package/default-settings
 
@@ -47,13 +69,5 @@ src/gz openwrt_routing https://mirrors.tuna.tsinghua.edu.cn/openwrt/releases/24.
 src/gz openwrt_telephony https://mirrors.tuna.tsinghua.edu.cn/openwrt/releases/24.10.1/packages/x86_64/telephony
 src/gz openwrt_core https://mirrors.tuna.tsinghua.edu.cn/openwrt/releases/24.10.1/targets/x86/64/kmods/6.6.86-1-af351158cfb5febf5155a3aa53785982
 EOF
-
-# ZeroWrt选项菜单
-mkdir -p files/bin
-curl -L -o files/bin/ZeroWrt https://git.kejizero.online/zhao/files/raw/branch/main/bin/ZeroWrt
-chmod +x files/bin/ZeroWrt
-mkdir -p files/root
-curl -L -o files/root/version.txt https://git.kejizero.online/zhao/files/raw/branch/main/bin/version.txt
-chmod +x files/root/version.txt
 
 exit 0
