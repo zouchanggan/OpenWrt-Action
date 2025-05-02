@@ -47,7 +47,7 @@ jobs:
       
     - name: Prepare Mixedwrt
       run: |
-        sudo chown -R runner:runner /home/runner/work/OpenWrt-Action
+        sudo chown -R runner:runner /home/runner/work/ZeroWrt-Action
         cp -r ./SCRIPTS/Rockchip/. ./SCRIPTS/
         cp -r ./SCRIPTS/. ./
         /bin/bash 01_get_ready.sh
@@ -58,7 +58,7 @@ jobs:
         cp -r ../SCRIPTS/. ./
         /bin/bash 02_prepare_package.sh
         /bin/bash 03_custom_settings_rk.sh
-#        /bin/bash 04_remove_upx.sh
+        /bin/bash 04_remove_upx.sh
         
     - name: QTMDFW4
       working-directory: ${{ github.workspace }}/openwrt
@@ -70,16 +70,16 @@ jobs:
 #      run: |
 #        /bin/bash 05_convert_translation.sh
         
-#    - name: Add ACL
-#      working-directory: ${{ github.workspace }}/openwrt
-#      run: |
-#        /bin/bash 06_create_acl_for_luci.sh -a
+    - name: Add ACL
+      working-directory: ${{ github.workspace }}/openwrt
+      run: |
+        /bin/bash 06_create_acl_for_luci.sh -a
         
-#    - name: Fix Permissions
-#      working-directory: ${{ github.workspace }}/openwrt
-#      run: |
-#        sudo -E chmod -R 755 ./07_fix_permissions.sh
-#        /bin/bash 07_fix_permissions.sh
+    - name: Fix Permissions
+      working-directory: ${{ github.workspace }}/openwrt
+      run: |
+        sudo -E chmod -R 755 ./07_fix_permissions.sh
+        /bin/bash 07_fix_permissions.sh
         
     - name: Make Config
       working-directory: ${{ github.workspace }}/openwrt
