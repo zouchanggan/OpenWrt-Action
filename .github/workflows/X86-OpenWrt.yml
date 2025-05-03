@@ -159,7 +159,6 @@ jobs:
       run: |
         cd openwrt/bin/targets/*/*
         cat sha256sums
-        cp openwrt/.config build.config
         mv -f openwrt/bin/packages/*/*/*.ipk packages
         tar -zcf Packages.tar.gz packages
         rm -rf packages feeds.buildinfo version.buildinfo
