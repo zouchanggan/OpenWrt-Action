@@ -157,8 +157,8 @@ jobs:
     - name: Organize Files
       id: Organize
       run: |
-        cd openwrt/bin/targets/*/*
-        rm -rf openwrt/bin/targets/x86/64/packages/.
+        cd openwrt/bin/targets/x86/64
+        rm -rf packages
         echo "KERNEL=$(cat *.manifest | grep ^kernel | cut -d- -f2 | tr -d ' ')" >> $GITHUB_ENV
         echo "FIRMWARE_PATH=$PWD" >> $GITHUB_ENV
             
