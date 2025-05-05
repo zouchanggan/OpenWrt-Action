@@ -155,8 +155,8 @@ jobs:
         make -j1 V=s
         
     - name: Organize Files
-      id: Organize
-      if: steps.compile.outputs.status == 'success'
+      id: organize
+      if: env.UPLOAD_FIRMWARE == 'true' && !cancelled()
       run: |
         cd openwrt/bin/targets/*/*
         cat sha256sums
@@ -164,7 +164,7 @@ jobs:
         tar -zcf Packages.tar.gz packages
         rm -rf packages
         echo "KERNEL=$(cat *.manifest | grep ^kernel | cut -d- -f2 | tr -d ' ')" >> $GITHUB_ENV
-        echo "FIRMWARE_PATH=$PWD" >> $GITHUB_ENV
+        echo "FIRMWARE=$PWD" >> $GITHUB_ENV
         
 #    - name: Organize Files
 #      id: Organize
@@ -185,7 +185,7 @@ jobs:
         commit: "24.10"
         replacesArtifacts: true
         token: ${{ secrets.GITHUB_TOKEN }}
-        artifacts: ${{ env.FIRMWARE_PATH }}/*
+        artifacts: ${{ env.FIRMWARE }}/*
         body: |
           **This is OpenWrt Firmware for X86_64**
           ### 📒 固件信息
