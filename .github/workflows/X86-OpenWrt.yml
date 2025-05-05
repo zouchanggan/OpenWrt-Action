@@ -156,8 +156,10 @@ jobs:
         
     - name: Organize Files
       id: Organize
+      if: steps.compile.outputs.status == 'success'
       run: |
-        cd openwrt/bin/targets/x86/64
+        cd openwrt/bin/targets/*/*
+        cat sha256sums
         mv -f openwrt/bin/packages/*/*/*.ipk packages
         tar -zcf Packages.tar.gz packages
         rm -rf packages
